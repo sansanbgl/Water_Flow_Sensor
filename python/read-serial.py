@@ -25,7 +25,7 @@ while line <= samples:
 
     file = open(fileName, "a")
 
-    file.write(data + "\n")
+    file.write(getData + "\n")
     line = line+1
 
 print("Data collection complete!")

@@ -4,8 +4,9 @@ byte sensorInterrupt_2 = 0;         // OUTPUT IN PIN 2  -> INTERRUPT = 0 FOR UNO
 byte sensorPin          = 3;
 byte sensorPin_2        = 2;
 
-float calibrationFactor   = 9.0;
-float calibrationFactor_2 = 4.5;
+// - Flow rate pulse characteristics: Frequency (Hz) = 7.5 * Flow rate (L/min)
+float calibrationFactor   = 7.5;
+float calibrationFactor_2 = 7.5;
 
 volatile byte pulseCount;  
 volatile byte pulseCount_2;  
@@ -20,10 +21,12 @@ unsigned long totalMilliLitres_2;
 unsigned long oldTime;
 
 String dataLabel0 = "DateTime";
-String dataLabel1 = "Input Flow";
-String dataLabel2 = "Output Flow";
-String dataLabel3 = "Total Output (mL)";
-String dataLabel4 = "Total Output (L)";
+String dataLabel1 = "Input Pulse";
+String dataLabel2 = "Output Pulse";
+String dataLabel3 = "Input Flow";
+String dataLabel4 = "Output Flow";
+String dataLabel5 = "Total Output (mL)";
+String dataLabel6 = "Total Output (L)";
 
 bool label = true;
 
@@ -56,14 +59,18 @@ void loop()
 {
   while(label) {
     Serial.print(dataLabel0);
-    Serial.print(", ");
+    Serial.print(";");
     Serial.print(dataLabel1);
-    Serial.print(", ");
+    Serial.print(";");
     Serial.print(dataLabel2);
-    Serial.print(", ");
+    Serial.print(";");
     Serial.print(dataLabel3);
-    Serial.print(", ");
-    Serial.println(dataLabel4);
+    Serial.print(";");
+    Serial.print(dataLabel4);
+    Serial.print(";");
+    Serial.print(dataLabel5);
+    Serial.print(";");
+    Serial.println(dataLabel6);
 
     label = false;
   }
@@ -72,7 +79,7 @@ void loop()
     detachInterrupt(sensorInterrupt);
     detachInterrupt(sensorInterrupt_2);
         
-    flowRate = (((1000.0 / (millis() - oldTime)) * pulseCount) / calibrationFactor) * 2;
+    flowRate = ((1000.0 / (millis() - oldTime)) * pulseCount) / calibrationFactor;
     flowRate_2 = ((1000.0 / (millis() - oldTime)) * pulseCount_2) / calibrationFactor_2;
     
     oldTime = millis();
@@ -86,33 +93,18 @@ void loop()
     unsigned int frac;
     unsigned int frac_2;
     
-    // Serial.print("Input: ");
-    // Serial.print(int(flowRate));
-    // Serial.println("L/min");
-    
-
-    // Serial.print("Output: ");
-    // Serial.print(int(flowRate_2));
-    // Serial.println("L/min");
-    
-
-    // Serial.print("Output (mL): ");        
-    // Serial.print(totalMilliLitres);
-    // Serial.println(" mL");        
-    // Serial.print("Output (L): ");        
-    // Serial.print(totalMilliLitres/1000);
-    // Serial.println(" L");        
-
-    // Serial.println();
-
     Serial.print(millis());
-    Serial.print(", ");
+    Serial.print(";");
+    Serial.print(int(pulseCount));
+    Serial.print(";");
+    Serial.print(int(pulseCount_2));
+    Serial.print(";");
     Serial.print(int(flowRate));
-    Serial.print(", ");
+    Serial.print(";");
     Serial.print(int(flowRate_2));
-    Serial.print(", ");
+    Serial.print(";");
     Serial.print(totalMilliLitres);
-    Serial.print(", ");
+    Serial.print(";");
     Serial.println(totalMilliLitres / 1000);
 
     pulseCount = 0;
