@@ -6,11 +6,15 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 # Function to update the plot with new data
 def update_plot():
     line = ser.readline().decode("utf-8").strip()  # Read a line of data and decode it
+    getData=line
+    data=getData[2:][:-5]
+    print(data)
+
     if line:
         data = line.split(";")  # Split the line into individual values
         if len(data) == 7:  # Ensure there are 7 values (as per your Arduino code)
             millis, pulseCount, pulseCount_2, flowRate, flowRate_2, totalMilliLitres, totalLitres = map(float, data)
-            data_points.append(flowRate)  # You can choose which value to plot
+            data_points.append(pulseCount, pulseCount_2)  # You can choose which value to plot
 
             if len(data_points) > samples:
                 data_points.pop(0)
@@ -41,7 +45,10 @@ ax = fig.add_subplot(111)
 canvas = FigureCanvasTkAgg(fig, master=root)
 canvas.get_tk_widget().pack()
 
+line = 0
+
 # Schedule the initial plot update and set an interval for subsequent updates
 root.after(1000, update_plot)  # Start updating the plot every 1000ms (1 second)
 
 root.mainloop()
+
