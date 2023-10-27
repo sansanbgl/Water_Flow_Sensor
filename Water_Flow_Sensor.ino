@@ -57,23 +57,23 @@ void setup()
 
 void loop()
 {
-  while(label) {
-    Serial.print(dataLabel0);
-    Serial.print(";");
-    Serial.print(dataLabel1);
-    Serial.print(";");
-    Serial.print(dataLabel2);
-    Serial.print(";");
-    Serial.print(dataLabel3);
-    Serial.print(";");
-    Serial.print(dataLabel4);
-    Serial.print(";");
-    Serial.print(dataLabel5);
-    Serial.print(";");
-    Serial.println(dataLabel6);
+  // while(label) {
+  //   Serial.print(dataLabel0);
+  //   Serial.print(";");
+  //   Serial.print(dataLabel1);
+  //   Serial.print(";");
+  //   Serial.print(dataLabel2);
+  //   Serial.print(";");
+  //   Serial.print(dataLabel3);
+  //   Serial.print(";");
+  //   Serial.print(dataLabel4);
+  //   Serial.print(";");
+  //   Serial.print(dataLabel5);
+  //   Serial.print(";");
+  //   Serial.println(dataLabel6);
 
-    label = false;
-  }
+  //   label = false;
+  // }
   
   if((millis() - oldTime) > 1000) { 
     detachInterrupt(sensorInterrupt);
@@ -93,7 +93,7 @@ void loop()
     unsigned int frac;
     unsigned int frac_2;
     
-    Serial.print(millis());
+    Serial.print(millis() / 100);
     Serial.print(";");
     Serial.print(int(pulseCount));
     Serial.print(";");
