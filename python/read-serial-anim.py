@@ -4,12 +4,15 @@ from matplotlib.animation import FuncAnimation
 from collections import deque
 import time
 
+fileName = "water-leakage-data-logger-anim.csv"
+
 # Function to update the plot with new data
 def update_plot(i):
     current_time = time.time()  # Get the current time in seconds since the epoch
     line = ser.readline().decode("utf-8").strip()  # Read a line of data and decode it
     print("Received Data:", line)  # Print the data to the terminal
-
+    file = open(fileName, "a")
+    file.write(line + "\n")
     if line:
         data = line.split(";")  # Split the line into individual values
         if len(data) == 7:  # Ensure there are 7 values (as per your Arduino code)
@@ -31,7 +34,7 @@ def update_plot(i):
             ax.set_title("Arduino Data Plot")
             ax.legend()
 
-arduino_port = "COM3"
+arduino_port = "COM4"
 baud = 9600
 samples = 200
 print_labels = False

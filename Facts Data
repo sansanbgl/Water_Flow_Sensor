@@ -1,0 +1,14 @@
+Using Flow in Umar Home, measuring avg of 1 Litre in 15 seconds (Faucet, not fully Open)
+
+Sum of the 2nd column: 8 + 10 + 13 + 14 + 14 + 13 + 10 + 11 + 13 + 14 + 13 + 10 + 9 + 11 + 14 = 172 Cycles
+
+Sum of the 3rd column: 0 + 0 + 7 + 9 + 13 + 13 + 9 + 10 + 12 + 11 + 11 + 10 + 8 + 8 + 13 = 134 Cycles (Its lower because at 15 seconds there is  still water coming out (residual))
+
+Avg of 1 litle
+
+Average of the 2nd column: 172 / 15 ≈ 11.47 (rounded to two decimal places)
+
+Average of the 3rd column: 134 / 15 ≈ 8.93 (rounded to two decimal places)
+
+approximately 0.0976 liters per cycle.
+

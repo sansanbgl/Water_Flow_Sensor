@@ -1,6 +1,6 @@
 import serial
 
-arduino_port = "COM3"
+arduino_port = "COM4"
 baud = 9600
 fileName = "water-leakage-data-logger.csv"
 samples = 200
