@@ -20,7 +20,7 @@ def update_plot(i):
             data_points.append((current_time, pulseCount, pulseCount_2))  # Add data to the list
 
             # Prune data older than 1 minute
-            one_minute_ago = current_time - 60000  # 60000 milliseconds in 1 minute
+            one_minute_ago = current_time - 60000  # 60000 milliseconds in 1 m13inute
             while data_points and data_points[0][0] < one_minute_ago:
                 data_points.popleft()
 

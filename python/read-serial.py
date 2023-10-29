@@ -29,4 +29,4 @@ while line <= samples:
     line = line+1
 
 print("Data collection complete!")
-file.close()
+file.close() 
