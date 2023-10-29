@@ -124,7 +124,7 @@ void loop()
     Serial.print(";");
     Serial.print(totalMilliLitres);
     Serial.print(";");
-    Serial.println(totalMilliLitres / 1000);
+    Serial.print(totalMilliLitres / 1000);
 
     int receivedValue;
     receivedValue = pulseCount_2;
@@ -142,8 +142,8 @@ void loop()
         baselineInitialized = true;
         float baselineMean = calculateMean(baselineReadings, NUM_BASELINE_READINGS);
 
-        Serial.print("Baseline Mean: ");
-        Serial.println(baselineMean);
+        Serial.print(";");
+        Serial.print(baselineMean);
       }
     }
     else
@@ -151,8 +151,9 @@ void loop()
       // Check for irregularity
       float standardDeviation = calculateStandardDeviation(pulseCount_2_readings, NUM_READINGS, receivedValue);
 
-      Serial.print("Standard Deviation: ");
-      Serial.println(standardDeviation);
+      // Serial.print("Standard Deviation: ");
+      Serial.print(";");
+      Serial.print(standardDeviation);
 
       if (standardDeviation > 5 && standardDeviation < 7.5)
       {
@@ -160,14 +161,15 @@ void loop()
         int pulseCountReading = pulseCount;
         if (pulseCountReading > 0)
         {
-          Serial.println("Small Leak Detected!");
+          // Serial.println("Small Leak Detected!");
         }
       }
       else if (standardDeviation > 7.5)
       {
-        Serial.println("Big Leak Detected!");
+        // Serial.println("Big Leak Detected!");
       }
     }
+    Serial.println("");
 
     pulseCount = 0;
     pulseCount_2 = 0;
