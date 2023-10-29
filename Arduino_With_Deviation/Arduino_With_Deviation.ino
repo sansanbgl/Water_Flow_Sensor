@@ -5,6 +5,7 @@
 int pulseCount_2_readings[NUM_READINGS];
 int baselineReadings[NUM_BASELINE_READINGS];
 int index = 0;
+int movingAverage = 0;
 
 #define Z_SCORE_THRESHOLD 5
 
@@ -14,6 +15,7 @@ byte sensorInterrupt_2 = 0; // OUTPUT IN PIN 2  -> INTERRUPT = 0 FOR UNO
 byte sensorPin = 3;
 byte sensorPin_2 = 2;
 int buzzerPin = 7;
+
 
 // - Flow rate pulse characteristics: Frequency (Hz) = 7.5 * Flow rate (L/min)
 float calibrationFactor = 7.5;
@@ -62,6 +64,41 @@ float calculateStandardDeviation(int data[], int dataSize, float mean)
   float variance = sum / dataSize;
   return sqrt(variance);
 }
+
+float calculateMovingAverage(int data[], int dataSize, float newData)
+{
+  if (dataSize >= 20)
+  {
+    // Shift the existing data to make room for the new data
+    for (int i = 0; i < dataSize - 1; i++)
+    {
+      data[i] = data[i + 1];
+    }
+
+    // Add the new data to the array
+    data[dataSize - 1] = newData;
+    
+    // Calculate the moving average of the last 20 data points
+    float sum = 0.0;
+    for (int i = 0; i < dataSize; i++)
+    {
+      sum += data[i];
+    }
+    float movingAvg = sum / 20;
+    return movingAvg;
+  }
+  else
+  {
+    float sum = 0.0;
+    for (int i = 0; i < dataSize; i++)
+    {
+      sum += data[i];
+    }
+    float movingAvg = sum / dataSize;
+    return movingAvg;
+  }
+}
+
 
 void setup()
 {
@@ -133,44 +170,58 @@ void loop()
     receivedValue = pulseCount_2;
     pulseCount_2_readings[index] = receivedValue;
     index = (index + 1) % NUM_READINGS;
-    if (!baselineInitialized)
-    {
-      // Calculate baseline values from the first 10 readings
-      baselineReadings[baselineCount] = receivedValue;
-      baselineSum += receivedValue;
-      baselineCount++;
+    // if (!baselineInitialized)
+    // {
+    //   // Calculate baseline values from the first 10 readings
+    //   baselineReadings[baselineCount] = receivedValue;
+    //   baselineSum += receivedValue;
+    //   baselineCount++;
 
-      if (baselineCount >= NUM_BASELINE_READINGS)
-      {
-        baselineInitialized = true;
-        baselineMean = calculateMean(baselineReadings, NUM_BASELINE_READINGS);
+    //   if (baselineCount >= NUM_BASELINE_READINGS)
+    //   {
+    //     baselineInitialized = true;
+    //     baselineMean = calculateMean(baselineReadings, NUM_BASELINE_READINGS);
 
         
-      }
-    }
-    else
-    {
-      // Check for irregularity
-      standardDeviation = calculateStandardDeviation(pulseCount_2_readings, NUM_READINGS, receivedValue);
-
-      // Serial.print("Standard Deviation: ");
-
-      if (standardDeviation > 5 && standardDeviation < 7.5)
-      {
-        // Check if pulseCount still has readings
+    //   }
+    // }
+    // else
+    // {
+      
+      movingAverage = calculateMovingAverage(pulseCount_2_readings, NUM_READINGS, receivedValue);
+      
+      if(receivedValue - movingAverage > 7 && receivedValue - movingAverage <=12 ){
         int pulseCountReading = pulseCount;
         if (pulseCountReading > 0)
         {
           printBuzzer(buzzerPin, 2000);
-          // Serial.println("Small Leak Detected!");
-
         }
       }
-      else if (standardDeviation > 7.5)
-      {
+      else if(receivedValue - movingAverage  <=12){
           printBuzzer(buzzerPin, 500);
       }
-    }
+
+      // // Check for irregularity
+      // standardDeviation = calculateStandardDeviation(pulseCount_2_readings, NUM_READINGS, receivedValue);
+
+      // // Serial.print("Standard Deviation: ");
+
+      // if (standardDeviation > 5 && standardDeviation < 7.5)
+      // {
+      //   // Check if pulseCount still has readings
+      //   int pulseCountReading = pulseCount;
+      //   if (pulseCountReading > 0)
+      //   {
+      //     printBuzzer(buzzerPin, 2000);
+      //     // Serial.println("Small Leak Detected!");
+
+      //   }
+      // }
+      // else if (standardDeviation > 7.5)
+      // {
+      //     printBuzzer(buzzerPin, 500);
+      // }
+    // }
     Serial.print(";");
     Serial.print(baselineMean);
     Serial.print(";");

@@ -5,8 +5,10 @@ from collections import deque
 from datetime import datetime
 import time
 
-s = datetime.now()
-fileName = "water-leakage-data-logger-anim"+s+".csv"
+current_datetime = datetime.now()
+formatted_datetime = 'a'
+
+fileName = "water-leakage-data-logger-anim"+formatted_datetime+".csv"
 
 # Function to update the plot with new data
 def update_plot(i):
