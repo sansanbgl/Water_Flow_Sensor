@@ -13,6 +13,7 @@ byte sensorInterrupt_2 = 0; // OUTPUT IN PIN 2  -> INTERRUPT = 0 FOR UNO
 
 byte sensorPin = 3;
 byte sensorPin_2 = 2;
+int buzzerPin = 7;
 
 // - Flow rate pulse characteristics: Frequency (Hz) = 7.5 * Flow rate (L/min)
 float calibrationFactor = 7.5;
@@ -70,6 +71,7 @@ void setup()
   digitalWrite(sensorPin, HIGH);
   pinMode(sensorPin_2, INPUT);
   digitalWrite(sensorPin_2, HIGH);
+  pinMode(buzzerPin, OUTPUT);
 
   pulseCount = 0;
   flowRate = 0.0;
@@ -90,7 +92,8 @@ void setup()
 bool baselineInitialized = false;
 int baselineSum = 0;
 int baselineCount = 0;
-
+float baselineMean = 0;
+float standardDeviation = 0;
 void loop()
 {
   if ((millis() - oldTime) > 1000)
@@ -140,20 +143,17 @@ void loop()
       if (baselineCount >= NUM_BASELINE_READINGS)
       {
         baselineInitialized = true;
-        float baselineMean = calculateMean(baselineReadings, NUM_BASELINE_READINGS);
+        baselineMean = calculateMean(baselineReadings, NUM_BASELINE_READINGS);
 
-        Serial.print(";");
-        Serial.print(baselineMean);
+        
       }
     }
     else
     {
       // Check for irregularity
-      float standardDeviation = calculateStandardDeviation(pulseCount_2_readings, NUM_READINGS, receivedValue);
+      standardDeviation = calculateStandardDeviation(pulseCount_2_readings, NUM_READINGS, receivedValue);
 
       // Serial.print("Standard Deviation: ");
-      Serial.print(";");
-      Serial.print(standardDeviation);
 
       if (standardDeviation > 5 && standardDeviation < 7.5)
       {
@@ -161,15 +161,22 @@ void loop()
         int pulseCountReading = pulseCount;
         if (pulseCountReading > 0)
         {
+          printBuzzer(buzzerPin, 2000);
           // Serial.println("Small Leak Detected!");
+
         }
       }
       else if (standardDeviation > 7.5)
       {
-        // Serial.println("Big Leak Detected!");
+          printBuzzer(buzzerPin, 500);
       }
     }
-    Serial.println("");
+    Serial.print(";");
+    Serial.print(baselineMean);
+    Serial.print(";");
+    Serial.print(standardDeviation);
+    Serial.print(";");
+    Serial.println("00");
 
     pulseCount = 0;
     pulseCount_2 = 0;
@@ -189,7 +196,9 @@ void pulseCounter_2()
   pulseCount_2++;
 }
 
-void printBuzzer()
+void printBuzzer(int buzzerPin, int buzzerDuration)
 {
-  Serial.println('Buzzed');
+  digitalWrite(buzzerPin, HIGH);
+  delay(buzzerDuration);
+  digitalWrite(buzzerPin, LOW);
 }

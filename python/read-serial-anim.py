@@ -15,8 +15,8 @@ def update_plot(i):
     file.write(line + "\n")
     if line:
         data = line.split(";")  # Split the line into individual values
-        if len(data) == 7:  # Ensure there are 7 values (as per your Arduino code)
-            millis, pulseCount, pulseCount_2, flowRate, flowRate_2, totalMilliLitres, totalLitres = map(float, data)
+        if len(data) == 10:  # Ensure there are 7 values (as per your Arduino code)
+            millis, pulseCount, pulseCount_2, flowRate, flowRate_2, totalMilliLitres, totalLitres, baseLineMean, standardDeviation, Et = map(float, data)
             data_points.append((current_time, pulseCount, pulseCount_2))  # Add data to the list
 
             # Prune data older than 1 minute
