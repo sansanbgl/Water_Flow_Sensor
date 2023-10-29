@@ -2,9 +2,11 @@ import serial
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from collections import deque
+from datetime import datetime
 import time
 
-fileName = "water-leakage-data-logger-anim.csv"
+s = datetime.now()
+fileName = "water-leakage-data-logger-anim"+s+".csv"
 
 # Function to update the plot with new data
 def update_plot(i):
